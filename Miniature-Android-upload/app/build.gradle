@@ -3,7 +3,7 @@ android {
     namespace 'com.miniature.app'
     compileSdk 34
     defaultConfig {
-        applicationId 'com.miniature.player'
+        applicationId 'com.miniature.music.player'
         minSdk 29
         targetSdk 34
         versionCode 1
