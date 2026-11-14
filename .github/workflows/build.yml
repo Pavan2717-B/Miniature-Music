@@ -22,6 +22,16 @@ jobs:
         run: |
           cat app/src/main/assets/parts/index.html.part* > app/src/main/assets/index.html
           rm -r app/src/main/assets/parts
+      - name: Make folder button use the Android picker
+        run: |
+          python3 - <<'EOF'
+          p='app/src/main/assets/index.html'
+          h=open(p,encoding='utf-8').read()
+          old='async function addFolder(){'
+          assert h.count(old)==1
+          h=h.replace(old,old+'if(window.AndroidBridge){toast("Opening folder picker…");pickFolderInput();return}')
+          open(p,'w',encoding='utf-8').write(h)
+          EOF
       - run: gradle assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4
         with:
