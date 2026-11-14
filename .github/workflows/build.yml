@@ -1,0 +1,28 @@
+name: Build APK
+on:
+  push:
+  workflow_dispatch:
+defaults:
+  run:
+    working-directory: Miniature-Android-upload
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.7
+          build-root-directory: Miniature-Android-upload
+      - name: Join the split HTML pieces
+        run: |
+          cat app/src/main/assets/parts/index.html.part* > app/src/main/assets/index.html
+          rm -r app/src/main/assets/parts
+      - run: gradle assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Miniature-apk
+          path: Miniature-Android-upload/app/build/outputs/apk/debug/app-debug.apk
